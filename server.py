@@ -1,6 +1,34 @@
 #! /usr/bin/env python3
 
 import zerorpc
+import configparser
+
+
+# config
+#  CONFIG_FILE = "/opt/native-backlight/config"
+CONFIG_FILE = "config"
+
+# config - Network
+CFG_NETWORK_SEC = "NETWORK"
+CFG_PORT = "port"
+
+# config - Other
+CFG_OTHER_SEC = "OTHER"
+CFG_THRESHOLD = "threshold"
+CFG_STEP = "step"
+CFG_BRIGHTNESS_FILE = "brightness_file"
+
+
+CONFIG = configparser.ConfigParser()
+CONFIG.read(CONFIG_FILE)
+
+# Network
+PORT = CONFIG[CFG_NETWORK_SEC].getint(CFG_PORT)
+
+# Other
+THRESHOLD = CONFIG[CFG_OTHER_SEC].getint(CFG_THRESHOLD)
+STEP = CONFIG[CFG_OTHER_SEC].getint(CFG_STEP)
+BRIGHTNESS_FILE = CONFIG[CFG_OTHER_SEC][CFG_BRIGHTNESS_FILE]
 
 
 class MessageHandler(object):
@@ -13,14 +41,12 @@ class MessageHandler(object):
         """
         return 10
 
-    # TODO put the value int inside a variable read from a config file
-    def increase(self, value: int = 10) -> int:
+    def increase(self, value: int = STEP) -> int:
         """Increase by 'value' the current brightness
         """
         return value
 
-    # TODO put the value int inside a variable read from a config file
-    def decrease(self, value: int = 10) -> int:
+    def decrease(self, value: int = STEP) -> int:
         """Decrease by 'value' the current brightness
         """
         return value
@@ -28,5 +54,6 @@ class MessageHandler(object):
 
 if __name__ == "__main__":
     SERVER = zerorpc.Server(MessageHandler())
-    SERVER.bind("tcp://127.0.0.1:9999") # TODO: put the port inside configs
+    ADDRESS = ("tcp://127.0.0.1:%s") % (PORT)
+    SERVER.bind(ADDRESS)
     SERVER.run()

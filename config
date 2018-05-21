@@ -1,0 +1,8 @@
+[NETWORK]
+port=9999
+
+[OTHER]
+threshold=500
+step=100
+brightness_file=/sys/class/backlight/intel_backlight/brightness
+
