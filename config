@@ -2,6 +2,8 @@
 port=9999
 
 [OTHER]
+max=6000
+default=4882
 threshold=500
 step=100
 brightness_file=/sys/class/backlight/intel_backlight/brightness

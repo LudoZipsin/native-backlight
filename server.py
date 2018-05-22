@@ -1,34 +1,22 @@
 #! /usr/bin/env python3
 
+"""This is the main file for the server part of the native brightness
+controller. It aims to provide a communication interface suitable to
+let client control the brightness without tempering with file permission
+on the brightness system file.
+
+This file should be run as root if you want it to work properly.
+"""
+
+
+#  import configparser
 import zerorpc
-import configparser
+
+import config
+import util
 
 
-# config
-#  CONFIG_FILE = "/opt/native-backlight/config"
-CONFIG_FILE = "config"
-
-# config - Network
-CFG_NETWORK_SEC = "NETWORK"
-CFG_PORT = "port"
-
-# config - Other
-CFG_OTHER_SEC = "OTHER"
-CFG_THRESHOLD = "threshold"
-CFG_STEP = "step"
-CFG_BRIGHTNESS_FILE = "brightness_file"
-
-
-CONFIG = configparser.ConfigParser()
-CONFIG.read(CONFIG_FILE)
-
-# Network
-PORT = CONFIG[CFG_NETWORK_SEC].getint(CFG_PORT)
-
-# Other
-THRESHOLD = CONFIG[CFG_OTHER_SEC].getint(CFG_THRESHOLD)
-STEP = CONFIG[CFG_OTHER_SEC].getint(CFG_STEP)
-BRIGHTNESS_FILE = CONFIG[CFG_OTHER_SEC][CFG_BRIGHTNESS_FILE]
+last_change = util.timestamp()
 
 
 class MessageHandler(object):
@@ -36,17 +24,20 @@ class MessageHandler(object):
     received by clients
     """
 
-    def reset(self) -> int:
+    @staticmethod
+    def reset() -> int:
         """Reset to default value the brightness of the monitor
         """
         return 10
 
-    def increase(self, value: int = STEP) -> int:
+    @staticmethod
+    def increase(value: int = config.brightness_step()) -> int:
         """Increase by 'value' the current brightness
         """
         return value
 
-    def decrease(self, value: int = STEP) -> int:
+    @staticmethod
+    def decrease(value: int = config.brightness_step()) -> int:
         """Decrease by 'value' the current brightness
         """
         return value
@@ -54,6 +45,6 @@ class MessageHandler(object):
 
 if __name__ == "__main__":
     SERVER = zerorpc.Server(MessageHandler())
-    ADDRESS = ("tcp://127.0.0.1:%s") % (PORT)
+    ADDRESS = ("tcp://127.0.0.1:%s") % (config.communication_port())
     SERVER.bind(ADDRESS)
     SERVER.run()
