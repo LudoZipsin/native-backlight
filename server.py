@@ -16,7 +16,7 @@ import config
 import util
 
 
-last_change = util.timestamp()
+#  last_change = util.timestamp()
 
 
 class MessageHandler(object):
@@ -24,23 +24,51 @@ class MessageHandler(object):
     received by clients
     """
 
-    @staticmethod
-    def reset() -> int:
+    def __init__(self):
+        self.last_change = util.timestamp()
+
+    def _validate_time(self) -> bool:
+        """Check wether we can updatime the brightness acording to the last
+        time it was changed
+        """
+        return (util.timestamp() - self.last_change) > config.time_threshold()
+
+    def _apply(self, func, *arg) -> int:
+        """apply the given function with the given args
+        functioon expected:
+            * brightness_writer
+            * brightness_increment
+            * brightness_drecrement
+        """
+        if self._validate_time():
+            self.last_change = util.timestamp()
+            return func(*arg)
+
+    def reset(self):
         """Reset to default value the brightness of the monitor
         """
-        return 10
+        try:
+            self._apply(util.brightness_writer, config.default_brightness())
+        except Exception as exp:
+            raise exp
 
-    @staticmethod
-    def increase(value: int = config.brightness_step()) -> int:
+    def increase(self, value: int = config.brightness_step()) -> int:
         """Increase by 'value' the current brightness
         """
-        return value
+        try:
+            new_brightness = self._apply(util.brightness_increment, value)
+            return new_brightness
+        except Exception as exp:
+            raise exp
 
-    @staticmethod
-    def decrease(value: int = config.brightness_step()) -> int:
+    def decrease(self, value: int = config.brightness_step()) -> int:
         """Decrease by 'value' the current brightness
         """
-        return value
+        try:
+            new_brightness = self._apply(util.brightness_decrement, value)
+            return new_brightness
+        except Exception as exp:
+            raise exp
 
 
 if __name__ == "__main__":
