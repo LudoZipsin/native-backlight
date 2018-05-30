@@ -38,9 +38,11 @@ class MessageHandler(object):
             * brightness_increment
             * brightness_drecrement
         """
+        result = -1
         if self._validate_time():
             self.last_change = util.timestamp()
-            return func(*arg)
+            result = func(*arg)
+        return result
 
     def reset(self):
         """Reset to default value the brightness of the monitor
