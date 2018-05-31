@@ -9,14 +9,12 @@ This file should be run as root if you want it to work properly.
 """
 
 
-#  import configparser
 import zerorpc
+
+from tendo import singleton
 
 import config
 import util
-
-
-#  last_change = util.timestamp()
 
 
 class MessageHandler(object):
@@ -40,9 +38,11 @@ class MessageHandler(object):
             * brightness_increment
             * brightness_drecrement
         """
+        result = -1
         if self._validate_time():
             self.last_change = util.timestamp()
-            return func(*arg)
+            result = func(*arg)
+        return result
 
     def reset(self):
         """Reset to default value the brightness of the monitor
@@ -72,6 +72,7 @@ class MessageHandler(object):
 
 
 if __name__ == "__main__":
+    SINGLETON = singleton.SingleInstance()
     SERVER = zerorpc.Server(MessageHandler())
     ADDRESS = ("tcp://127.0.0.1:%s") % (config.communication_port())
     SERVER.bind(ADDRESS)
