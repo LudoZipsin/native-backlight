@@ -1,0 +1,15 @@
+[Unit]
+Description=Backlight Controller Service
+After=network-online.target
+
+[Service]
+Type=simple
+User=root
+WorkingDirectory=/opt/native-backlight
+ExecStart=/opt/native-backlight/bin/server.py
+Restart=on-failure
+
+[Install]
+WantedBy=multi-user.target
+
+
