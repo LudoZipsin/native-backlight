@@ -6,8 +6,8 @@ import configparser
 
 
 # config
-#  CONFIG_FILE = "/opt/native-backlight/config"
-_CONFIG_FILE = "config"
+_CONFIG_FILE = "/opt/native-backlight/config"
+#  _CONFIG_FILE = "config"
 
 # config - Network
 _CFG_NETWORK_SEC = "NETWORK"
