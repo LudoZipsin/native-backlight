@@ -1,5 +1,0 @@
-[ ] server: adding a close function to gracefully exit server (like listening on "close" signal)
-[ ] make a service out of this utility
-[ ] make an install script for this tool
-[ ] add license file -> chose license (FOSS of course)
-[ ] make a publice repo with an update readme
