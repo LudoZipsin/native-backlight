@@ -2,6 +2,8 @@
 
 **Why ?** Because `redshift` mess things up and override most system backlight control. And because it is useless to have a color shift with a full bright monitor, we have to use another approch to control brightness.
 Also, most windows mananger like gnome or kde might provide some way to control color shift and brightness control, it is not always true one using more lightweight wm (I use `i3` and it does not give such control natively since it is a wm and not a gaz factory). 
+
+
 **How ?** This soft, registered as a service, provide a control to the file responsible to set the brightness value of the monitor (thanks to unix, most configration, even low level ones, are done using files).
 
 ## Install
